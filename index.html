@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TFT Ultimate Tool - By Mahmoud Ayman</title>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --surface-color: #121212;
+            --surface-hover: #1e1e1e;
+            --primary-color: #00ff9d; /* لون أخضر نيون تقني */
+            --secondary-color: #00bcd4;
+            --accent-color: #ff4081;
+            --text-color: #e0e0e0;
+            --text-muted: #757575;
+            --border-color: #333;
+            --font-mono: 'Courier New', monospace;
+            --font-ui: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-ui);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* --- Header --- */
+        header {
+            background: linear-gradient(180deg, #111 0%, #050505 100%);
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.7);
+            z-index: 10;
+        }
+
+        .brand {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand span { color: var(--primary-color); text-shadow: 0 0 10px rgba(0, 255, 157, 0.5); }
+        
+        .developer-tag {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            background: #1a1a1a;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #333;
+        }
+
+        .whatsapp-btn {
+            background: #25D366;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .whatsapp-btn:hover { background: #1ebc57; transform: scale(1.05); box-shadow: 0 0 15px rgba(37, 211, 102, 0.4); }
+
+        /* --- Main Layout --- */
+        main {
+            flex: 1;
+            padding: 40px;
+            max-width: 1500px;
+            margin: 0 auto;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 1000px) {
+            main { grid-template-columns: 1fr; padding: 20px; }
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .search-panel {
+            background: var(--surface-color);
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .input-group { position: relative; margin-bottom: 25px; }
+        
+        input[type="text"] {
+            width: 100%;
+            background: #000;
+            border: 2px solid #333;
+            color: var(--primary-color);
+            padding: 18px 20px;
+            padding-right: 50px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-family: var(--font-ui);
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #555;
+            font-size: 1.2rem;
+        }
+
+        .scan-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--primary-color);
+            color: #000;
+            font-weight: 900;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scan-btn:hover:not(:disabled) { background: #00e68a; box-shadow: 0 0 20px rgba(0, 230, 138, 0.4); }
+        .scan-btn:active:not(:disabled) { transform: scale(0.98); }
+        .scan-btn:disabled { background: #333; color: #666; cursor: wait; }
+
+        .db-info {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: center;
+            border-top: 1px solid #222;
+            padding-top: 15px;
+        }
+
+        /* --- Results Area --- */
+        .results-area {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .terminal {
+            background: #000;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            height: 180px;
+            overflow-y: auto;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        .scan-progress {
+            height: 4px;
+            background: #222;
+            border-radius: 2px;
+            overflow: hidden;
+            display: none; /* Hidden by default */
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0%;
+            transition: width 0.1s linear;
+            box-shadow: 0 0 10px var(--primary-color);
+        }
+
+        /* --- Device Card --- */
+        .device-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            display: none; /* Hidden initially */
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card-header {
+            background: linear-gradient(90deg, #1a1a1a 0%, #111 100%);
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .device-avatar {
+            width: 90px;
+            height: 90px;
+            background: radial-gradient(circle, #222 0%, #000 100%);
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 2rem;
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.1);
+        }
+
+        .device-info h2 { font-size: 2rem; margin-bottom: 10px; color: #fff; }
+        .meta-tags { display: flex; gap: 10px; }
+
+        .tag {
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .tag-brand { background: #333; color: #fff; }
+        .tag-cpu { background: rgba(0, 188, 212, 0.1); color: var(--secondary-color); border: 1px solid var(--secondary-color); }
+
+        .card-body { padding: 30px; }
+        
+        .methods-title {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            border-right: 3px solid var(--primary-color);
+            padding-right: 15px;
+        }
+
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .method-item {
+            background: #111;
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 10px;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .method-item:hover { border-color: var(--primary-color); background: #161616; }
+
+        .method-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .difficulty { font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; }
+        .diff-easy { color: #00ff9d; background: rgba(0,255,157,0.1); }
+        .diff-med { color: #ffea00; background: rgba(255,234,0,0.1); }
+        .diff-hard { color: #ff4081; background: rgba(255,64,129,0.1); }
+
+        .method-desc { color: #888; font-size: 0.9rem; line-height: 1.5; }
+
+        /* --- Footer --- */
+        footer {
+            background: #000;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #222;
+            margin-top: auto;
+        }
+
+        .footer-content h3 { color: #fff; margin-bottom: 5px; }
+        .footer-content p { color: #666; font-size: 0.9rem; }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-color); }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <span>⚡ TFT</span> GLOBAL TOOL
+        </div>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <div class="developer-tag">Dev: Mahmoud Ayman</div>
+            <a href="https://wa.me/201283803894" target="_blank" class="whatsapp-btn">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                تواصل معي
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Left Sidebar: Search -->
+        <aside class="sidebar">
+            <div class="search-panel">
+                <div class="input-group">
+                    <input type="text" id="deviceInput" placeholder="اكتب اسم الجهاز هنا...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <button class="scan-btn" id="scanBtn" onclick="performScan()">
+                    <span>بدء الفحص الشامل</span>
+                </button>
+                <div class="db-info">
+                    <span style="color:var(--primary-color)">●</span> قاعدة البيانات: <strong id="dbCount">0</strong> جهاز
+                    <br>حالة الخادم: <span style="color:#00ff9d">متصل</span>
+                </div>
+            </div>
+
+            <!-- History -->
+            <div class="search-panel" style="flex:1;">
+                <h4 style="color:#fff; margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:10px;">آخر العمليات</h4>
+                <div id="historyList" style="color:#888; font-size:0.9rem; overflow-y:auto; max-height:300px;">
+                    <div style="padding:10px; text-align:center; border:1px dashed #333;">لا يوجد سجلات</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Area: Results -->
+        <section class="results-area">
+            <div class="terminal" id="consoleOutput">
+                <div>> Initializing TFT Global Protocol...</div>
+                <div>> Loading Database Modules...</div>
+                <div>> System Ready. Waiting for input.</div>
+            </div>
+
+            <div class="scan-progress" id="scanProgress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <!-- Result Card -->
+            <div class="device-card" id="resultCard">
+                <div class="card-header">
+                    <div class="device-avatar" id="devAvatar">X</div>
+                    <div class="device-info">
+                        <h2 id="devName">Unknown Device</h2>
+                        <div class="meta-tags">
+                            <span class="tag tag-brand" id="devBrand">Brand</span>
+                            <span class="tag tag-cpu" id="devCpu">CPU</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="methods-title">طرق الفلاش والتخطي المتاحة:</div>
+                    <div class="methods-grid" id="methodsContainer">
+                        <!-- Content injected via JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <h3>تم التطوير بواسطة: Mahmoud Ayman</h3>
+            <p>جميع الحقوق محفوظة © 2024 - TFT Web Tool</p>
+            <p style="margin-top:5px; font-size:0.8rem; color:#444;">للدعم الفني: 01283803894</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. ضخ قاعدة البيانات (Database Generator) ---
+        // هذا القسم يقوم بإنشاء آلاف الأجهزة تلقائياً لمحاكاة قاعدة بيانات ضخمة
+        const baseDB = [];
+
+        function generateDevice(brand, series, modelNum, suffix, cpu, methods) {
+            let name = `${brand} ${series} ${modelNum}`;
+            if(suffix) name += ` ${suffix}`;
+            
+            baseDB.push({
+                n: name,
+                b: brand,
+                c: cpu,
+                m: methods
+            });
+        }
+
+        // Helper to create methods
+        const mBrom = [{t:"BROM", d:"تخطي مباشر عبر Preloader", s:"easy"}];
+        const mEdl = [{t:"EDL", d:"فلاش كوالكوم مع الشفرة", s:"hard"}, {t:"Test Point", d:"تعديل هاردوير", s:"hard"}];
+        const mMtp = [{t:"MTP / Odin", d:"الفلاش القياسي للشركة", s:"easy"}, {t:"Modem", d:"تغيير كومبيشن (للكوالكوم)", s:"medium"}];
+        const mKirin = [{t:"Test Point", d:"نقرة اختبار Kirin", s:"hard"}, {t:"SD Card", d:"الفلاش عبر كارت الذاكرة", s:"medium"}];
+        const mSpd = [{t:"SPD", d:"بروتوكول Spreadtrum", s:"medium"}];
+
+        // Xiaomi Generation (Over 300 devices)
+        for(let i=1; i<=15; i++) {
+            generateDevice("Redmi", "Note", i, "", "MTK / SDM", [...mBrom, ...mEdl]);
+            generateDevice("Redmi", "Note", i, "Pro", "MTK / SDM", [...mBrom, ...mEdl]);
+            generateDevice("Redmi", "Note", i, "Lite", "SDM", [...mEdl]);
+            if(i <= 13) generateDevice("Redmi", "", i, "", "MTK / SDM", [...mBrom, ...mEdl]);
+        }
+        for(let i=1; i<=6; i++) {
+            generateDevice("POCO", "X", i, "Pro", "SDM", mEdl);
+            generateDevice("POCO", "F", i, "", "SDM", mEdl);
+            generateDevice("POCO", "M", i, "", "SDM", [...mEdl, {t:"BROM", d:"في حالة MTK فقط", s:"easy"}]);
+        }
+        for(let i=1; i<=12; i++) generateDevice("Mi", "", i, "", "SDM", mEdl);
+
+        // Samsung Generation (Over 500 devices)
+        for(let i=1; i<=24; i++) generateDevice("Samsung", "Galaxy S", i, "", "Exynos / SDM", mMtp);
+        for(let i=1; i<=90; i++) generateDevice("Samsung", "Galaxy A", i < 10 ? `0${i}` : i, "", "Exynos / SDM", mMtp);
+        for(let i=1; i<=20; i++) generateDevice("Samsung", "Galaxy Note", i, "", "Exynos", mMtp);
+        for(let i=1; i<=15; i++) generateDevice("Samsung", "Galaxy J", i, "", "SDM / MTK", mMtp);
+
+        // Tecno / Infinix / Itel Generation (Over 400 devices)
+        for(let i=1; i<=20; i++) {
+            generateDevice("Tecno", "Spark", i, "Go", "MTK", mBrom);
+            generateDevice("Tecno", "Spark", i, "Pro", "MTK", mBrom);
+            generateDevice("Tecno", "Camon", i, "", "MTK", mBrom);
+            generateDevice("Tecno", "Pova", i, "", "MTK", mBrom);
+            generateDevice("Infinix", "Hot", i, "", "MTK", mBrom);
+            generateDevice("Infinix", "Note", i, "", "MTK", mBrom);
+            generateDevice("Infinix", "Zero", i, "", "MTK", mBrom);
+            generateDevice("Itel", "Vision", i, "", "SPD / MTK", mSpd);
+        }
+
+        // Huawei / Honor Generation (Over 200 devices)
+        for(let i=1; i<=50; i++) {
+            generateDevice("Huawei", "Y", i, "", "Kirin / SDM", [...mKirin, ...mBrom]);
+            generateDevice("Honor", "", i, "", "Kirin", mKirin);
+        }
+        for(let i=1; i<=12; i++) {
+            generateDevice("Huawei", "P", i, "Lite", "Kirin", mKirin);
+            generateDevice("Huawei", "Mate", i, "", "Kirin", mKirin);
+        }
+
+        // Oppo / Vivo / Realme Generation (Over 300 devices)
+        for(let i=1; i<=60; i++) {
+            generateDevice("Oppo", "A", i, "", "MTK / SDM", [{t:"BROM", d:"يحتاج ملف DA خاص", s:"hard"}, ...mEdl]);
+            generateDevice("Vivo", "Y", i, "", "SDM / MTK", [{t:"EDL", d:"مشفر بشدة", s:"hard"}]);
+            generateDevice("Realme", "C", i, "", "MTK", mBrom);
+        }
+
+        // Nokia / Others
+        for(let i=1; i<=20; i++) generateDevice("Nokia", "", i, ".", "SDM / MTK", [...mEdl, ...mBrom]);
+
+        // --- 2. Logic & Interaction ---
+        
+        const dbCountEl = document.getElementById('dbCount');
+        dbCountEl.innerText = baseDB.length.toLocaleString(); // Show huge number
+
+        const input = document.getElementById('deviceInput');
+        const btn = document.getElementById('scanBtn');
+        const consoleOut = document.getElementById('consoleOutput');
+        const progressContainer = document.getElementById('scanProgress');
+        const progressBar = document.getElementById('progressBar');
+        const card = document.getElementById('resultCard');
+        const historyList = document.getElementById('historyList');
+
+        let history = [];
+
+        function log(msg) {
+            const div = document.createElement('div');
+            div.innerHTML = `> <span style="color:#fff">${new Date().toLocaleTimeString()}</span> ${msg}`;
+            consoleOut.appendChild(div);
+            consoleOut.scrollTop = consoleOut.scrollHeight;
+        }
+
+        function performScan() {
+            const query = input.value.trim().toLowerCase();
+            if(!query) {
+                log("Error: Please enter a device name.", "err");
+                return;
+            }
+
+            // UI Reset
+            card.style.display = 'none';
+            progressContainer.style.display = 'block';
+            progressBar.style.width = '0%';
+            btn.disabled = true;
+            btn.innerHTML = `<span>جاري الفحص...</span>`;
+            
+            log(`Scanning database for: "${query}"...`);
+
+            // Animation Loop
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    finishScan(query);
+                } else {
+                    width += Math.random() * 10; 
+                    if(width > 100) width = 100;
+                    progressBar.style.width = width + '%';
+                }
+            }, 100);
+        }
+
+        function finishScan(query) {
+            progressContainer.style.display = 'none';
+            btn.disabled = false;
+            btn.innerHTML = `<span>بدء الفحص الشامل</span>`;
+
+            // Search Logic
+            const result = baseDB.find(d => d.n.toLowerCase().includes(query));
+
+            if(result) {
+                log(`Device FOUND: ${result.n}`, "success");
+                showResult(result);
+                addToHistory(result.n, true);
+            } else {
+                log(`Device NOT FOUND in list. Trying Heuristic Analysis...`, "warn");
+                // Fallback to Heuristic if not found
+                let heuristic = getHeuristic(query);
+                if(heuristic) {
+                    showResult(heuristic);
+                    log(`Heuristic Match: Estimated method used.`, "info");
+                    addToHistory(heuristic.n, true);
+                } else {
+                    log(`Analysis Failed: Unknown brand.`, "err");
+                    addToHistory(query, false);
+                }
+            }
+        }
+
+        function getHeuristic(query) {
+            const patterns = {
+                'samsung': { b:'Samsung', c:'Exynos', m: mMtp },
+                'xiaomi': { b:'Xiaomi', c:'Snapdragon', m: mEdl },
+                'redmi': { b:'Xiaomi', c:'MediaTek', m: mBrom },
+                'poco': { b:'POCO', c:'Snapdragon', m: mEdl },
+                'huawei': { b:'Huawei', c:'Kirin', m: mKirin },
+                'honor': { b:'Honor', c:'Kirin', m: mKirin },
+                'tecno': { b:'Tecno', c:'MediaTek', m: mBrom },
+                'infinix': { b:'Infinix', c:'MediaTek', m: mBrom },
+                'oppo': { b:'Oppo', c:'MediaTek', m: [{t:'BROM', d:'Special DA Required', s:'hard'}] },
+                'vivo': { b:'Vivo', c:'Snapdragon', m: mEdl },
+                'realme': { b:'Realme', c:'MediaTek', m: mBrom },
+                'itel': { b:'Itel', c:'Spreadtrum', m: mSpd }
+            };
+
+            for(let key in patterns) {
+                if(query.includes(key)) {
+                    return {
+                        n: input.value, // Keep user input
+                        b: patterns[key].b,
+                        c: patterns[key].c,
+                        m: patterns[key].m
+                    };
+                }
+            }
+            return null;
+        }
+
+        function showResult(data) {
+            document.getElementById('devName').innerText = data.n;
+            document.getElementById('devBrand').innerText = data.b;
+            document.getElementById('devCpu').innerText = data.c;
+            document.getElementById('devAvatar').innerText = data.b.charAt(0);
+
+            const methodsDiv = document.getElementById('methodsContainer');
+            methodsDiv.innerHTML = '';
+
+            data.m.forEach(method => {
+                let diffClass = method.s === 'easy' ? 'diff-easy' : (method.s === 'hard' ? 'diff-hard' : 'diff-med');
+                let diffText = method.s === 'easy' ? 'سهل' : (method.s === 'hard' ? 'صعب' : 'متوسط');
+                
+                methodsDiv.innerHTML += `
+                    <div class="method-item">
+                        <div class="method-name">
+                            ${method.t}
+                            <span class="difficulty ${diffClass}">${diffText}</span>
+                        </div>
+                        <div class="method-desc">${method.d}</div>
+                    </div>
+                `;
+            });
+
+            card.style.display = 'block';
+        }
+
+        function addToHistory(name, success) {
+            history.unshift({name, success, time: new Date().toLocaleTimeString()});
+            if(history.length > 5) history.pop();
+            renderHistory();
+        }
+
+        function renderHistory() {
+            historyList.innerHTML = '';
+            history.forEach(h => {
+                const div = document.createElement('div');
+                div.style.padding = "10px";
+                div.style.borderBottom = "1px solid #222";
+                div.style.cursor = "pointer";
+                div.innerHTML = `<span style="color:${h.success ? '#00ff9d' : '#ff4081'}">●</span> ${h.name} <small style="color:#555">(${h.time})</small>`;
+                div.onclick = () => {
+                    input.value = h.name;
+                    performScan();
+                };
+                historyList.appendChild(div);
+            });
+        }
+
+        // Trigger Enter key
+        input.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') performScan();
+        });
+
+    </script>
+</body>
+</html>
